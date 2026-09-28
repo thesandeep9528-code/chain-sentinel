@@ -9,35 +9,5 @@
         }
       ]
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/portal",
-      "destination": "/frontend/portal.html"
-    },
-    {
-      "source": "/portal.html",
-      "destination": "/frontend/portal.html"
-    },
-    {
-      "source": "/styles.css",
-      "destination": "/frontend/styles.css"
-    },
-    {
-      "source": "/app.jsx",
-      "destination": "/frontend/app.jsx"
-    },
-    {
-      "source": "/demo_data.js",
-      "destination": "/frontend/demo_data.js"
-    },
-    {
-      "source": "/vendor/(.*)",
-      "destination": "/frontend/vendor/$1"
-    },
-    {
-      "source": "/frontend/(.*)",
-      "destination": "/frontend/$1"
-    }
   ]
 }

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chain Sentinel — Master Command Portal (All Project Links)</title>
+  <style>
+    :root {
+      --bg-black: #080a0d;
+      --bg-card: #121620;
+      --bg-card-hover: #181e2b;
+      --border: #232b3b;
+      --border-accent: #3b82f6;
+      --text: #e2e8f0;
+      --text-muted: #8b949e;
+      --accent: #3b82f6;
+      --risk-crit: #f43f5e;
+      --risk-high: #f97316;
+      --risk-low: #10b981;
+      --font-mono: 'SFMono-Regular', Consolas, Menlo, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-black);
+      color: var(--text);
+      font-family: var(--font-sans);
+      padding: 30px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 1000px;
+      width: 100%;
+    }
+    .header-banner {
+      background: linear-gradient(180deg, #161c28 0%, #10141e 100%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-tag {
+      background: #1e2638;
+      border: 1px solid #334155;
+      color: #93c5fd;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0d121b;
+      border: 1px solid #22c55e;
+      color: #86efac;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 22px 0 12px;
+      font-weight: 700;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-url {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #60a5fa;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin: 8px 0 12px;
+    }
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+    .tag-ui { background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .tag-api { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-doc { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .tag-data { background: rgba(168, 85, 247, 0.15); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+    .launch-arrow {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-banner">
+      <div>
+        <div class="brand-title">
+          <span>⬢ CHAIN SENTINEL</span>
+          <span class="brand-tag">SIH26146</span>
+          <span class="brand-tag">OFFLINE PORTAL</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+          Master Unified Navigation Hub — All Forensics Workstation Modules & APIs in One Place
+        </p>
+      </div>
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        <span>ALL SERVICES ONLINE</span>
+      </div>
+    </div>
+
+    <!-- PRIMARY USER INTERFACES -->
+    <div class="section-title">1. Primary Forensics Workstation Consoles</div>
+    <div class="grid">
+      <a href="http://127.0.0.1:3000" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">🔬 Main Forensics Workstation (React)</span>
+            <span class="tag tag-ui">PRIMARY UI</span>
+          </div>
+          <div class="card-url">http://127.0.0.1:3000</div>
+          <p class="card-desc">
+            Complete cyber investigator workspace: Overview Metrics, Priority Leads, Cytoscape.js Graph, Transaction Flow, Network Intelligence & Evidence Dossier.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">● Ready / Hosted</span>
+          <span class="launch-arrow">Open Console ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/docs" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">📖 Interactive OpenAPI / Swagger</span>
+            <span class="tag tag-doc">DOCS</span>
+          </div>
+          <div class="card-url">http://127.0.0.1:8000/docs</div>
+          <p class="card-desc">
+            Live interactive documentation for executing and testing all backend endpoints: Ingestion, Anomaly Model, Subgraphs, Network Metrics, and Entity Resolution.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">● FastDocs Ready</span>
+          <span class="launch-arrow">Explore API ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/redoc" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">📑 Technical Architecture & ReDoc</span>
+            <span class="tag tag-doc">SPEC</span>
+          </div>
+          <div class="card-url">http://127.0.0.1:8000/redoc</div>
+          <p class="card-desc">
+            Clean, formal specification and data schemas for all Bitcoin transaction and network layer forensic models.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">● ReDoc View</span>
+          <span class="launch-arrow">Open ReDoc ➔</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- CORE FORENSIC REST ENDPOINTS -->
+    <div class="section-title">2. Live Backend Forensics Endpoints</div>
+    <div class="grid">
+      <a href="http://127.0.0.1:8000/api/dataset/status" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">📊 Dataset Operational Status</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/dataset/status</div>
+          <p class="card-desc">
+            Returns real-time counts of analyzed transactions (2,650), resolved entities (13,103), suspicious leads, graph nodes, and clusters.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /status</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/api/alerts" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">🚨 Ranked Priority Alerts (ML)</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/alerts</div>
+          <p class="card-desc">
+            XGBoost & Isolation Forest explainable priority alerts with 0–100 risk scores, confidence ratings, and granular forensic indicators.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /alerts</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/api/graph" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">🕸️ Cytoscape Heterogeneous Graph</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/graph</div>
+          <p class="card-desc">
+            Topological JSON elements (nodes: Wallets, Transactions, IPs; edges: FUNDS_IN, FUNDS_OUT, BROADCAST_BY, RECEIVED_BY).
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /graph</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/api/transactions" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">💸 Transactions & Cross-Layer Ledger</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/transactions</div>
+          <p class="card-desc">
+            Raw Bitcoin transaction data merged with network broadcast IPs, destination ports, geographic origins, and ASNs.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /transactions</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/api/entities" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">👤 Resolved Entities Directory</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/entities</div>
+          <p class="card-desc">
+            Deterministic index of resolved Wallets, IP addresses, and ASNs with aggregated transaction counts and calculated risk levels.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /entities</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+
+      <a href="http://127.0.0.1:8000/api/network" target="_blank" class="card">
+        <div>
+          <div class="card-top">
+            <span class="card-title">🌐 Network Traffic Intelligence</span>
+            <span class="tag tag-api">REST API</span>
+          </div>
+          <div class="card-url">/api/network</div>
+          <p class="card-desc">
+            Broadcaster analytics: Top source IPs, destination peers, port analysis (8333 vs 80), and ASN/jurisdiction distribution.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #22c55e;">GET /network</span>
+          <span class="launch-arrow">View JSON ➔</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- LOCAL ARTIFACTS & DATA FILES -->
+    <div class="section-title">3. Local Air-Gapped Files & Documentation</div>
+    <div class="grid">
+      <div class="card" style="cursor: default;">
+        <div>
+          <div class="card-top">
+            <span class="card-title">💾 Synthetic Demonstration Dataset</span>
+            <span class="tag tag-data">DATASET</span>
+          </div>
+          <div class="card-url">data/demo/synthetic_demo.csv</div>
+          <p class="card-desc">
+            2,650 realistic Bitcoin records containing normal baselines and synthetic bursts, high-fanout consolidations, and non-standard port movements.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #94a3b8;">Local File Store</span>
+          <span class="tag tag-data">CSV Format</span>
+        </div>
+      </div>
+
+      <div class="card" style="cursor: default;">
+        <div>
+          <div class="card-top">
+            <span class="card-title">📄 Project Forensic Documentation</span>
+            <span class="tag tag-doc">GUIDE</span>
+          </div>
+          <div class="card-url">README.md</div>
+          <p class="card-desc">
+            Comprehensive system documentation covering architecture, ML feature vectors, explainability model, and air-gapped guidelines.
+          </p>
+        </div>
+        <div class="card-foot">
+          <span style="color: #94a3b8;">Markdown Document</span>
+          <span class="tag tag-doc">SIH26146</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      CHAIN SENTINEL • SIH26146 • SquadY #182149 • Air-Gapped Forensics Console
+    </footer>
+  </div>
+</body>
+</html>

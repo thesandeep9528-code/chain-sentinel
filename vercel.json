@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    { "src": "/portal.html", "dest": "/frontend/portal.html" },
+    { "src": "/portal", "dest": "/frontend/portal.html" },
+    { "src": "/styles.css", "dest": "/frontend/styles.css" },
+    { "src": "/app.jsx", "dest": "/frontend/app.jsx" },
+    { "src": "/demo_data.js", "dest": "/frontend/demo_data.js" },
+    { "src": "/vendor/(.*)", "dest": "/frontend/vendor/$1" },
+    { "src": "/frontend/(.*)", "dest": "/frontend/$1" },
+    { "src": "/", "dest": "/frontend/index.html" },
+    { "src": "/(.*)", "dest": "/frontend/$1" }
+  ]
+}

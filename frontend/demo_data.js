@@ -11774,4 +11774,4 @@ window.CHAIN_SENTINEL_DEMO_DATA = {
     "total_nodes": 13103,
     "total_edges": 10600
   }
-};\n
+};

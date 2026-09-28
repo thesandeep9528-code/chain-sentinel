@@ -5,37 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chain Sentinel — Offline Bitcoin Forensics Workstation (SIH26146)</title>
   
-  <!-- Automatic fallback redirect to frontend application -->
-  <script>
-    window.location.replace("frontend/index.html");
-  </script>
-  <meta http-equiv="refresh" content="0; url=frontend/index.html">
-  <style>
-    body {
-      background: #080a0d;
-      color: #94a3b8;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
-    }
-    a {
-      color: #3b82f6;
-      text-decoration: none;
-      font-weight: 600;
-    }
-  </style>
+  <!-- Offline-Cached Vendor Dependencies -->
+  <script src="frontend/vendor/react.production.min.js"></script>
+  <script src="frontend/vendor/react-dom.production.min.js"></script>
+  <script src="frontend/vendor/cytoscape.min.js"></script>
+  <script src="frontend/vendor/babel.min.js"></script>
+
+  <!-- Pre-computed Demonstration Forensic Dataset for Cloud Preview -->
+  <script src="frontend/demo_data.js"></script>
+
+  <!-- Professional Dark Cybersecurity Stylesheet -->
+  <link rel="stylesheet" href="frontend/styles.css">
 </head>
 <body>
-  <div>
-    <h2>⬢ CHAIN SENTINEL</h2>
-    <p>Loading Forensics Workstation...</p>
-    <p style="margin-top: 16px; font-size: 13px;">
-      <a href="frontend/index.html">Click here if not redirected automatically</a>
-    </p>
-  </div>
+  <div id="root"></div>
+
+  <!-- React Enterprise Forensics Application Script -->
+  <script type="text/babel" src="frontend/app.jsx"></script>
 </body>
 </html>

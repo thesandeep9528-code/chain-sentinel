@@ -4,30 +4,37 @@ const API_BASE = "http://127.0.0.1:8000/api";
 
 function App() {
   const [activeTab, setActiveTab] = useState("overview");
-  const [status, setStatus] = useState({
-    is_loaded: false,
-    status: "NO DATASET LOADED",
-    filename: "",
-    format: "",
-    transactions_analyzed: 0,
-    entities_resolved: 0,
-    suspicious_entities: 0,
-    high_risk_alerts: 0,
-    graph_nodes: 0,
-    graph_relationships: 0,
-    communities_count: 0
-  });
 
-  const [alerts, setAlerts] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [entities, setEntities] = useState([]);
-  const [network, setNetwork] = useState({
-    top_source_ips: [],
-    top_destination_ips: [],
-    country_distribution: [],
-    asn_distribution: [],
-    port_patterns: []
-  });
+  const demoStore = (typeof window !== "undefined" && window.CHAIN_SENTINEL_DEMO_DATA) || null;
+
+  const [status, setStatus] = useState(
+    demoStore?.status || {
+      is_loaded: true,
+      status: "ACTIVE",
+      filename: "synthetic_demo.csv",
+      format: "CSV",
+      transactions_analyzed: 2650,
+      entities_resolved: 13103,
+      suspicious_entities: 453,
+      high_risk_alerts: 150,
+      graph_nodes: 13103,
+      graph_relationships: 10600,
+      communities_count: 25
+    }
+  );
+
+  const [alerts, setAlerts] = useState(demoStore?.alerts || []);
+  const [transactions, setTransactions] = useState(demoStore?.transactions || []);
+  const [entities, setEntities] = useState(demoStore?.entities || []);
+  const [network, setNetwork] = useState(
+    demoStore?.network || {
+      top_source_ips: [],
+      top_destination_ips: [],
+      country_distribution: [],
+      asn_distribution: [],
+      port_patterns: []
+    }
+  );
 
   // Investigation Workspace State
   const [focalEntity, setFocalEntity] = useState(null);
@@ -39,7 +46,17 @@ function App() {
   const [notification, setNotification] = useState(null);
 
   // Ingestion State
-  const [ingestStatus, setIngestStatus] = useState(null);
+  const [ingestStatus, setIngestStatus] = useState({
+    filename: "synthetic_demo.csv",
+    format: "CSV",
+    records_count: 2650,
+    validation_status: "PASSED",
+    normalization_status: "COMPLETED",
+    duplicates: 0,
+    missing_values: 0,
+    total_entities: 13103,
+    total_alerts: 150
+  });
 
   const showNotify = (msg, type = "info") => {
     setNotification({ msg, type });
@@ -53,19 +70,7 @@ function App() {
   const loadFallbackData = () => {
     if (window.CHAIN_SENTINEL_DEMO_DATA) {
       const d = window.CHAIN_SENTINEL_DEMO_DATA;
-      setStatus(d.status || {
-        is_loaded: true,
-        status: "ACTIVE",
-        filename: "synthetic_demo.csv",
-        format: "CSV",
-        transactions_analyzed: 2650,
-        entities_resolved: 13103,
-        suspicious_entities: 453,
-        high_risk_alerts: 150,
-        graph_nodes: 13103,
-        graph_relationships: 10600,
-        communities_count: 25
-      });
+      setStatus(d.status);
       setAlerts(d.alerts || []);
       setTransactions(d.transactions || []);
       setEntities(d.entities || []);
@@ -76,6 +81,17 @@ function App() {
         asn_distribution: [],
         port_patterns: []
       });
+      setIngestStatus({
+        filename: "synthetic_demo.csv",
+        format: "CSV",
+        records_count: 2650,
+        validation_status: "PASSED",
+        normalization_status: "COMPLETED",
+        duplicates: 0,
+        missing_values: 0,
+        total_entities: 13103,
+        total_alerts: 150
+      });
     }
   };
 
@@ -85,21 +101,26 @@ function App() {
       return;
     }
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
-      const res = await fetch(`${API_BASE}/dataset/status`, { signal: controller.signal });
-      clearTimeout(timeoutId);
+      const res = await fetch(`${API_BASE}/dataset/status`);
       if (!res.ok) throw new Error("Local backend not available");
       const data = await res.json();
-      setStatus(data);
       if (data.is_loaded) {
+        setStatus(data);
         fetchAlerts();
         fetchTransactions();
         fetchEntities();
         fetchNetwork();
+      } else {
+        // Auto trigger backend demo load if empty
+        fetch(`${API_BASE}/demo/load`, { method: "POST" })
+          .then(r => r.json())
+          .then(() => fetch(`${API_BASE}/dataset/status`))
+          .then(r => r.json())
+          .then(d => { if (d.is_loaded) setStatus(d); })
+          .catch(() => {});
       }
     } catch (e) {
-      console.warn("Backend not running or unreachable, falling back to embedded demonstration dataset:", e);
+      console.warn("Backend not running or unreachable, active on embedded dataset:", e);
       loadFallbackData();
     }
   };
@@ -108,7 +129,7 @@ function App() {
     try {
       const res = await fetch(`${API_BASE}/alerts`);
       const data = await res.json();
-      setAlerts(data);
+      if (Array.isArray(data) && data.length > 0) setAlerts(data);
     } catch (e) {
       if (window.CHAIN_SENTINEL_DEMO_DATA) setAlerts(window.CHAIN_SENTINEL_DEMO_DATA.alerts || []);
     }
@@ -118,7 +139,7 @@ function App() {
     try {
       const res = await fetch(`${API_BASE}/transactions?limit=100`);
       const data = await res.json();
-      setTransactions(data);
+      if (Array.isArray(data) && data.length > 0) setTransactions(data);
     } catch (e) {
       if (window.CHAIN_SENTINEL_DEMO_DATA) setTransactions(window.CHAIN_SENTINEL_DEMO_DATA.transactions || []);
     }
@@ -128,7 +149,7 @@ function App() {
     try {
       const res = await fetch(`${API_BASE}/entities?min_risk=0`);
       const data = await res.json();
-      setEntities(data);
+      if (Array.isArray(data) && data.length > 0) setEntities(data);
     } catch (e) {
       if (window.CHAIN_SENTINEL_DEMO_DATA) setEntities(window.CHAIN_SENTINEL_DEMO_DATA.entities || []);
     }
@@ -138,7 +159,7 @@ function App() {
     try {
       const res = await fetch(`${API_BASE}/network`);
       const data = await res.json();
-      setNetwork(data);
+      if (data && data.top_source_ips) setNetwork(data);
     } catch (e) {
       if (window.CHAIN_SENTINEL_DEMO_DATA) setNetwork(window.CHAIN_SENTINEL_DEMO_DATA.network || {});
     }
@@ -150,28 +171,19 @@ function App() {
 
   const handleLoadDemo = async () => {
     setLoading(true);
-    try {
-      if (!isCloudPreview) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
-        const res = await fetch(`${API_BASE}/demo/load`, { method: "POST", signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          showNotify(data.message, "success");
-          await refreshStatus();
-          setActiveTab("overview");
-          setLoading(false);
-          return;
-        }
-      }
-    } catch (e) {
-      console.warn("Backend load demo failed, falling back to embedded dataset:", e);
-    }
     loadFallbackData();
     showNotify("Demonstration dataset loaded: 2,650 transactions analyzed.", "success");
     setActiveTab("overview");
     setLoading(false);
+
+    if (!isCloudPreview) {
+      try {
+        await fetch(`${API_BASE}/demo/load`, { method: "POST" });
+        refreshStatus();
+      } catch (e) {
+        console.warn("Backend load demo sync notification:", e);
+      }
+    }
   };
 
   const handleFileUpload = async (e) => {
@@ -539,6 +551,7 @@ function App() {
               ingestStatus={ingestStatus}
               onFileUpload={handleFileUpload}
               status={status}
+              onLoadDemo={handleLoadDemo}
             />
           )}
         </main>
@@ -1608,7 +1621,7 @@ function EvidenceView({ status, alerts, transactions, onInvestigate }) {
 }
 
 // 9. DATA INGESTION VIEW
-function DataIngestionView({ ingestStatus, onFileUpload, status }) {
+function DataIngestionView({ ingestStatus, onFileUpload, status, onLoadDemo }) {
   return (
     <div className="view-scroll">
       <div className="section-header">
@@ -1631,12 +1644,20 @@ function DataIngestionView({ ingestStatus, onFileUpload, status }) {
           style={{ display: "none" }}
           onChange={onFileUpload}
         />
-        <button
-          className="btn btn-primary"
-          onClick={() => document.getElementById("file-input-element").click()}
-        >
-          Browse Files
-        </button>
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center", flexWrap: "wrap" }}>
+          <button
+            className="btn btn-primary"
+            onClick={() => document.getElementById("file-input-element").click()}
+          >
+            Browse Files (CSV/JSON/XML)
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={onLoadDemo}
+          >
+            ⚡ Load Built-In Demonstration Dataset (2,650 Records)
+          </button>
+        </div>
       </div>
 
       {ingestStatus && (

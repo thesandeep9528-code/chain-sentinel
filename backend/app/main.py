@@ -24,6 +24,16 @@ app.include_router(graph.router, prefix="/api")
 app.include_router(alerts.router, prefix="/api")
 app.include_router(network.router, prefix="/api")
 
+@app.on_event("startup")
+async def auto_load_dataset_on_startup():
+    """Auto-load demo dataset on server boot so the forensics platform is instantly ready."""
+    try:
+        from .api.ingestion import load_demo
+        await load_demo()
+        print("[+] Chain Sentinel Forensics Engine: Pre-loaded synthetic demo dataset into memory.")
+    except Exception as e:
+        print(f"[!] Warning: Startup dataset pre-load encountered: {e}")
+
 @app.get("/")
 async def root():
     return {"status": "ONLINE", "system": "Chain Sentinel Forensics Engine"}
